@@ -400,7 +400,7 @@ bool Pet::LoadPetFromDB(Player* owner, uint32 petEntry, uint32 petNumber, bool c
     _LoadSpellCooldowns();
 
     owner->SetPet(this);                                    // in DB stored only full controlled creature
-    DEBUG_LOG("New Pet has guid %u", GetGUIDLow());
+    sLog.outDebug("New Pet has guid %u", GetGUIDLow());
 
     if (owner->GetTypeId() == TYPEID_PLAYER)
     {
@@ -1272,7 +1272,7 @@ bool Pet::CreateBaseAtCreature(Creature* creature)
 
     uint32 guid = creature->GetMap()->GenerateLocalLowGuid(HIGHGUID_PET);
 
-    //BASIC_LOG("Create pet");
+    //sLog.outBasic("Create pet");
     uint32 pet_number = sObjectMgr.GeneratePetNumber();
     if (!Create(guid, pos, creature->GetCreatureInfo(), pet_number))
         return false;
@@ -1439,7 +1439,7 @@ bool Pet::InitStatsForLevel(uint32 petlevel, Unit* owner)
             {
                 // Erreur qui se declanche quand un mob invoque un add (squelette par exemple), et qui n'a
                 // donc pas de stats de pet.
-                DEBUG_LOG("Summoned pet (Entry: %u) not have pet stats data in DB", cinfo->entry);
+                sLog.outDebug("Summoned pet (Entry: %u) not have pet stats data in DB", cinfo->entry);
 
                 // disregard template multiplier
                 SetCreateHealth(GetClassLevelStats()->health * healthMod);

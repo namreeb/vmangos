@@ -195,7 +195,7 @@ void Spell::EffectEmpty(SpellEffectIndex /*eff_idx*/)
 
 void Spell::EffectNULL(SpellEffectIndex /*eff_idx*/)
 {
-    DEBUG_LOG("WORLD: Spell Effect DUMMY");
+    sLog.outDebug("WORLD: Spell Effect DUMMY");
 }
 
 void Spell::EffectUnused(SpellEffectIndex /*eff_idx*/)
@@ -1275,7 +1275,7 @@ void Spell::EffectDummy(SpellEffectIndex eff_idx)
 
                     creatureTarget->ForcedDespawn();
 
-                    DEBUG_LOG("AddObject at SpellEfects.cpp EffectDummy");
+                    sLog.outDebug("AddObject at SpellEfects.cpp EffectDummy");
                     map->Add(pGameObj);
 
                     WorldPacket data(SMSG_GAMEOBJECT_SPAWN_ANIM, 8);
@@ -2782,7 +2782,7 @@ void Spell::EffectOpenLock(SpellEffectIndex eff_idx)
 {
     if (!m_caster || m_caster->GetTypeId() != TYPEID_PLAYER)
     {
-        DEBUG_LOG("WORLD: Open Lock - No Player Caster!");
+        sLog.outDebug("WORLD: Open Lock - No Player Caster!");
         return;
     }
 
@@ -2830,7 +2830,7 @@ void Spell::EffectOpenLock(SpellEffectIndex eff_idx)
     }
     else
     {
-        DEBUG_LOG("WORLD: Open Lock - No GameObject/Item Target!");
+        sLog.outDebug("WORLD: Open Lock - No GameObject/Item Target!");
         return;
     }
 
@@ -3116,7 +3116,7 @@ void Spell::EffectLearnSpell(SpellEffectIndex eff_idx)
     uint32 spellToLearn = m_spellInfo->EffectTriggerSpell[eff_idx];
     player->LearnSpell(spellToLearn, false);
 
-    DEBUG_LOG("Spell: Player %u has learned spell %u from NpcGUID=%u", player->GetGUIDLow(), spellToLearn, m_caster->GetGUIDLow());
+    sLog.outDebug("Spell: Player %u has learned spell %u from NpcGUID=%u", player->GetGUIDLow(), spellToLearn, m_caster->GetGUIDLow());
 }
 
 void Spell::EffectDispel(SpellEffectIndex eff_idx)
@@ -3276,7 +3276,7 @@ void Spell::EffectDispel(SpellEffectIndex eff_idx)
                         heal_spell = 19735;
                         break;
                     default:
-                        DEBUG_LOG("Spell for Devour Magic %d not handled in Spell::EffectDispel", m_spellInfo->Id);
+                        sLog.outDebug("Spell for Devour Magic %d not handled in Spell::EffectDispel", m_spellInfo->Id);
                         break;
                 }
                 if (heal_spell)
@@ -3308,7 +3308,7 @@ void Spell::EffectDualWield(SpellEffectIndex /*eff_idx*/)
 void Spell::EffectPull(SpellEffectIndex /*eff_idx*/)
 {
     // TODO: create a proper pull towards distract spell center for distract
-    DEBUG_LOG("WORLD: Spell Effect DUMMY");
+    sLog.outDebug("WORLD: Spell Effect DUMMY");
 }
 
 void Spell::EffectDistract(SpellEffectIndex eff_idx)
@@ -3736,7 +3736,7 @@ void Spell::EffectLearnSkill(SpellEffectIndex eff_idx)
     target->SetSkill(skillid, current, max, step);
 
     if (SpellCaster const* caster = GetCastingObject())
-        DEBUG_LOG("Spell: %s has learned skill %u (to maxlevel %u) from %s", target->GetGuidStr().c_str(), skillid, max, caster->GetGuidStr().c_str());
+        sLog.outDebug("Spell: %s has learned skill %u (to maxlevel %u) from %s", target->GetGuidStr().c_str(), skillid, max, caster->GetGuidStr().c_str());
 }
 
 void Spell::EffectAddHonor(SpellEffectIndex /*eff_idx*/)
@@ -4047,7 +4047,7 @@ ObjectGuid Unit::EffectSummonPet(uint32 spellId, uint32 petEntry, uint32 petLeve
 
     map->Add((Creature*)newSummon);
     SetPet(newSummon);
-    DEBUG_LOG("New Pet has guid %u", newSummon->GetGUIDLow());
+    sLog.outDebug("New Pet has guid %u", newSummon->GetGUIDLow());
 
     if (Player* caster = ToPlayer())
     {
@@ -5618,7 +5618,7 @@ void Spell::EffectStuck(SpellEffectIndex /*eff_idx*/)
 
     Player* pTarget = (Player*)unitTarget;
 
-    DEBUG_LOG("Spell Effect: Stuck");
+    sLog.outDebug("Spell Effect: Stuck");
     sLog.outInfo("Player %s (guid %u) used auto-unstuck feature at map %u (%f, %f, %f).", pTarget->GetName(), pTarget->GetGUIDLow(), m_caster->GetMapId(), m_caster->GetPositionX(), pTarget->GetPositionY(), pTarget->GetPositionZ());
 
     if (pTarget->IsTaxiFlying())
@@ -6697,7 +6697,7 @@ void Spell::EffectTransmitted(SpellEffectIndex eff_idx)
     pGameObj->SetUInt32Value(GAMEOBJECT_LEVEL, m_casterUnit->GetLevel());
     pGameObj->SetSpellId(m_spellInfo->Id);
 
-    DEBUG_LOG("AddObject at SpellEfects.cpp EffectTransmitted");
+    sLog.outDebug("AddObject at SpellEfects.cpp EffectTransmitted");
     //m_casterUnit->AddGameObject(pGameObj);
     //m_ObjToDel.push_back(pGameObj);
 
@@ -6713,7 +6713,7 @@ void Spell::EffectTransmitted(SpellEffectIndex eff_idx)
 
 void Spell::EffectSkill(SpellEffectIndex /*eff_idx*/)
 {
-    DEBUG_LOG("WORLD: SkillEFFECT");
+    sLog.outDebug("WORLD: SkillEFFECT");
 }
 
 void Spell::EffectSummonDemon(SpellEffectIndex eff_idx)
@@ -6782,7 +6782,7 @@ void Spell::EffectSpiritHeal(SpellEffectIndex /*eff_idx*/)
 // remove insignia spell effect
 void Spell::EffectSkinPlayerCorpse(SpellEffectIndex eff_idx)
 {
-    DEBUG_LOG("Effect: SkinPlayerCorpse");
+    sLog.outDebug("Effect: SkinPlayerCorpse");
     Player* playerCaster = m_caster->ToPlayer();
     if (!playerCaster)
         return;
@@ -6795,7 +6795,7 @@ void Spell::EffectSkinPlayerCorpse(SpellEffectIndex eff_idx)
         ASSERT(corpseTarget);
         sObjectAccessor.ConvertCorpseForPlayer(corpseTarget->GetOwnerGuid(), playerCaster);
         playerCaster->SendLoot(corpseTarget->GetObjectGuid(), LOOT_INSIGNIA);
-        DEBUG_LOG("Effect SkinPlayerCorpse: corpse owner was not found");
+        sLog.outDebug("Effect SkinPlayerCorpse: corpse owner was not found");
         return;
     }
 
@@ -6829,11 +6829,11 @@ void Spell::EffectBind(SpellEffectIndex eff_idx)
     data << uint32(area_id);
     player->SendDirectMessage(&data);
 
-    DEBUG_LOG("New Home Position X is %f", loc.x);
-    DEBUG_LOG("New Home Position Y is %f", loc.y);
-    DEBUG_LOG("New Home Position Z is %f", loc.z);
-    DEBUG_LOG("New Home MapId is %u", loc.mapId);
-    DEBUG_LOG("New Home AreaId is %u", area_id);
+    sLog.outDebug("New Home Position X is %f", loc.x);
+    sLog.outDebug("New Home Position Y is %f", loc.y);
+    sLog.outDebug("New Home Position Z is %f", loc.z);
+    sLog.outDebug("New Home MapId is %u", loc.mapId);
+    sLog.outDebug("New Home AreaId is %u", area_id);
 
     // zone update
     data.Initialize(SMSG_PLAYERBOUND, 8 + 4);
@@ -6844,12 +6844,12 @@ void Spell::EffectBind(SpellEffectIndex eff_idx)
 
 void Spell::EffectDespawnObject(SpellEffectIndex eff_idx)
 {
-    DEBUG_LOG("SPELL_EFFECT_DESPAWN_OBJECT");
+    sLog.outDebug("SPELL_EFFECT_DESPAWN_OBJECT");
     if (!gameObjTarget)
         return;
     gameObjTarget->AddObjectToRemoveList();
 }
 void Spell::EffectNostalrius(SpellEffectIndex eff_idx)
 {
-    DEBUG_LOG("SPELL_EFFECT_NOSTALRIUS");
+    sLog.outDebug("SPELL_EFFECT_NOSTALRIUS");
 }

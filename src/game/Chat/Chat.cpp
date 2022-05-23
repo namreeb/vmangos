@@ -1794,7 +1794,7 @@ bool ChatHandler::SetDataForCommandInTable(ChatCommand *commandTable, char const
         case CHAT_COMMAND_OK:
         {
             if (command->SecurityLevel != security)
-                DETAIL_LOG("Table `command` overwrite for command '%s' default security (%hhu) by %hhu",
+                sLog.outDetail("Table `command` overwrite for command '%s' default security (%hhu) by %hhu",
                            fullcommand.c_str(), command->SecurityLevel, security);
 
             command->SecurityLevel = security;
@@ -2013,14 +2013,14 @@ bool ChatHandler::isValidChatMessage(char const* message)
         }
         else if (reader.get() != '|')
         {
-            DEBUG_LOG("ChatHandler::isValidChatMessage sequence aborted unexpectedly");
+            sLog.outDebug("ChatHandler::isValidChatMessage sequence aborted unexpectedly");
             return false;
         }
 
         // pipe has always to be followed by at least one char
         if (reader.peek() == '\0')
         {
-            DEBUG_LOG("ChatHandler::isValidChatMessage pipe followed by \\0");
+            sLog.outDebug("ChatHandler::isValidChatMessage pipe followed by \\0");
             return false;
         }
 
@@ -2043,14 +2043,14 @@ bool ChatHandler::isValidChatMessage(char const* message)
             }
             else
             {
-                DEBUG_LOG("ChatHandler::isValidChatMessage invalid sequence, expected %c but got %c", *validSequenceIterator, commandChar);
+                sLog.outDebug("ChatHandler::isValidChatMessage invalid sequence, expected %c but got %c", *validSequenceIterator, commandChar);
                 return false;
             }
         }
         else if (validSequence != validSequenceIterator)
         {
             // no escaped pipes in sequences
-            DEBUG_LOG("ChatHandler::isValidChatMessage got escaped pipe in sequence");
+            sLog.outDebug("ChatHandler::isValidChatMessage got escaped pipe in sequence");
             return false;
         }
 
@@ -2065,7 +2065,7 @@ bool ChatHandler::isValidChatMessage(char const* message)
                     reader >> c;
                     if (!c)
                     {
-                        DEBUG_LOG("ChatHandler::isValidChatMessage got \\0 while reading color in |c command");
+                        sLog.outDebug("ChatHandler::isValidChatMessage got \\0 while reading color in |c command");
                         return false;
                     }
 
@@ -2081,7 +2081,7 @@ bool ChatHandler::isValidChatMessage(char const* message)
                         color |= 10 + c - 'a';
                         continue;
                     }
-                    DEBUG_LOG("ChatHandler::isValidChatMessage got non hex char '%c' while reading color", c);
+                    sLog.outDebug("ChatHandler::isValidChatMessage got non hex char '%c' while reading color", c);
                     return false;
                 }
                 break;
@@ -2101,13 +2101,13 @@ bool ChatHandler::isValidChatMessage(char const* message)
                     linkedItem = ObjectMgr::GetItemPrototype(atoi(buffer));
                     if (!linkedItem)
                     {
-                        DEBUG_LOG("ChatHandler::isValidChatMessage got invalid itemID %u in |item command", atoi(buffer));
+                        sLog.outDebug("ChatHandler::isValidChatMessage got invalid itemID %u in |item command", atoi(buffer));
                         return false;
                     }
 
                     if (color != ItemQualityColors[linkedItem->Quality])
                     {
-                        DEBUG_LOG("ChatHandler::isValidChatMessage linked item has color %u, but user claims %u", ItemQualityColors[linkedItem->Quality],
+                        sLog.outDebug("ChatHandler::isValidChatMessage linked item has color %u, but user claims %u", ItemQualityColors[linkedItem->Quality],
                                   color);
                         return false;
                     }
@@ -2177,7 +2177,7 @@ bool ChatHandler::isValidChatMessage(char const* message)
                 }
                 else
                 {
-                    DEBUG_LOG("ChatHandler::isValidChatMessage user sent unsupported link type '%s'", buffer);
+                    sLog.outDebug("ChatHandler::isValidChatMessage user sent unsupported link type '%s'", buffer);
                     return false;
                 }
                 break;
@@ -2188,7 +2188,7 @@ bool ChatHandler::isValidChatMessage(char const* message)
                     // links start with '['
                     if (reader.get() != '[')
                     {
-                        DEBUG_LOG("ChatHandler::isValidChatMessage link caption doesn't start with '['");
+                        sLog.outDebug("ChatHandler::isValidChatMessage link caption doesn't start with '['");
                         return false;
                     }
                     reader.getline(buffer, 256, ']');
@@ -2302,14 +2302,14 @@ bool ChatHandler::isValidChatMessage(char const* message)
                 // no further payload
                 break;
             default:
-                DEBUG_LOG("ChatHandler::isValidChatMessage got invalid command |%c", commandChar);
+                sLog.outDebug("ChatHandler::isValidChatMessage got invalid command |%c", commandChar);
                 return false;
         }
     }
 
     // check if every opened sequence was also closed properly
     if (validSequence != validSequenceIterator)
-        DEBUG_LOG("ChatHandler::isValidChatMessage EOF in active sequence");
+        sLog.outDebug("ChatHandler::isValidChatMessage EOF in active sequence");
 
     return validSequence == validSequenceIterator;
 }
