@@ -152,7 +152,7 @@ void WorldSession::HandleCharEnum(QueryResult* result)
             if (m_characterMaxLevel < level)
                 m_characterMaxLevel = level;
 
-            sLog.outDetail("Build enum data for char guid %u from account %u.", guidlow, GetAccountId());
+            sLog.Out(LOG_BASIC, LOG_LVL_DETAIL, "Build enum data for char guid %u from account %u.", guidlow, GetAccountId());
             if (Player::BuildEnumData(result, &data))
                 ++num;
         }
@@ -336,8 +336,9 @@ void WorldSession::HandleCharCreateOpcode(WorldPacket& recv_data)
         SendPacket(&data);
 
         std::string IP_str = GetRemoteAddress();
-        sLog.outBasic("Account: %d (IP: %s) Create Character:[%s] (guid: %u)", GetAccountId(), IP_str.c_str(), name.c_str(), guidLow);
-        sLog.out(LOG_CHAR, "Account: %d (IP: %s) Create Character:[%s] (guid: %u)", GetAccountId(), IP_str.c_str(), name.c_str(), guidLow);
+        sLog.Player(GetAccountId(), LOG_CHAR, LOG_LVL_BASIC,
+            "Account: %d (IP: %s) Create Character:[%s] (guid: %u)",
+            GetAccountId(), IP_str.c_str(), name.c_str(), guidLow);
     }
     else
     {
@@ -381,8 +382,7 @@ void WorldSession::HandleCharDeleteOpcode(WorldPacket& recv_data)
         return;
 
     std::string IP_str = GetRemoteAddress();
-    sLog.outBasic("Account: %d (IP: %s) Delete Character:[%s] (guid: %u)", GetAccountId(), IP_str.c_str(), name.c_str(), lowguid);
-    sLog.out(LOG_CHAR, "Account: %d (IP: %s) Delete Character:[%s] (guid: %u)", GetAccountId(), IP_str.c_str(), name.c_str(), lowguid);
+    sLog.Player(GetAccountId(), LOG_CHAR, LOG_LVL_BASIC, "Account: %d (IP: %s) Delete Character:[%s] (guid: %u)", GetAccountId(), IP_str.c_str(), name.c_str(), lowguid);
 
     // If the character is online (ALT-F4 logout for example)
     if (Player* onlinePlayer = sObjectAccessor.FindPlayer(guid))
@@ -411,7 +411,7 @@ void WorldSession::HandlePlayerLoginOpcode(WorldPacket& recv_data)
         return;
     }
 
-    sLog.outDebug("WORLD: Recvd Player Logon Message");
+    sLog.Out(LOG_BASIC, LOG_LVL_DEBUG, "WORLD: Recvd Player Logon Message");
 
     LoginQueryHolder *holder = new LoginQueryHolder(GetAccountId(), playerGuid);
     if (!holder->Initialize())
@@ -443,7 +443,7 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder *holder)
     // Session2 created, requests login, and receives 2 login callback.
     if (GetPlayer() || !m_playerLoading)
     {
-        sLog.outInfo("[CRASH] HandlePlayerLogin on session %u with player %s [loading=%u]", GetAccountId(), GetPlayerName(), m_playerLoading);
+        sLog.Out(LOG_BASIC, LOG_LVL_MINIMAL, "[CRASH] HandlePlayerLogin on session %u with player %s [loading=%u]", GetAccountId(), GetPlayerName(), m_playerLoading);
         delete holder;
         m_playerLoading = false;
         return;
@@ -483,7 +483,7 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder *holder)
         // Character found online but not in world ?
         if (HashMapHolder<Player>::Find(playerGuid))
         {
-            sLog.outInfo("[CRASH] Trying to login already ingame character guid %u", playerGuid.GetCounter());
+            sLog.Out(LOG_BASIC, LOG_LVL_MINIMAL, "[CRASH] Trying to login already ingame character guid %u", playerGuid.GetCounter());
             KickPlayer();
             delete holder;
             m_playerLoading = false;
@@ -577,7 +577,7 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder *holder)
             ++linecount;
         }
 
-        sLog.outDebug("WORLD: Sent motd (SMSG_MOTD)");
+        sLog.Out(LOG_BASIC, LOG_LVL_DEBUG, "WORLD: Sent motd (SMSG_MOTD)");
     }
 
     if (Guild* guild = sGuildMgr.GetGuildById(pCurrChar->GetGuildId()))
@@ -587,7 +587,7 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder *holder)
         data << uint8(1);
         data << guild->GetMOTD();
         SendPacket(&data);
-        sLog.outDebug("WORLD: Sent guild-motd (SMSG_GUILD_EVENT)");
+        sLog.Out(LOG_BASIC, LOG_LVL_DEBUG, "WORLD: Sent guild-motd (SMSG_GUILD_EVENT)");
 
         guild->BroadcastEvent(GE_SIGNED_ON, pCurrChar->GetObjectGuid(), pCurrChar->GetName());
     }
@@ -624,7 +624,7 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder *holder)
     else
         sObjectAccessor.AddObject(pCurrChar);
 
-    //sLog.outDebug("Player %s added to Map.",pCurrChar->GetName());
+    //sLog.Out(LOG_BASIC, LOG_LVL_DEBUG, "Player %s added to Map.",pCurrChar->GetName());
     pCurrChar->GetSocial()->SendFriendList();
     pCurrChar->GetSocial()->SendIgnoreList();
 
@@ -723,8 +723,9 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder *holder)
 
     std::string IP_str = GetRemoteAddress();
 
-    sLog.out(LOG_CHAR, "Account: %d (IP: %s) Login Character:[%s] (guid: %u)%s",
+    sLog.Player(this, LOG_CHAR, LOG_LVL_DETAIL, "Account: %d (IP: %s) Login Character:[%s] (guid: %u)%s",
              GetAccountId(), IP_str.c_str(), pCurrChar->GetName(), pCurrChar->GetGUIDLow(), alreadyOnline ? " Player was already online" : "");
+    
     sWorld.LogCharacter(pCurrChar, "Login");
     
     if (!alreadyOnline && !pCurrChar->IsStandingUp() && !pCurrChar->HasUnitState(UNIT_STAT_STUNNED))
@@ -751,7 +752,7 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder *holder)
 
 void WorldSession::HandleSetFactionAtWarOpcode(WorldPacket& recv_data)
 {
-    sLog.outDebug("WORLD: Received CMSG_SET_FACTION_ATWAR");
+    sLog.Out(LOG_BASIC, LOG_LVL_DEBUG, "WORLD: Received CMSG_SET_FACTION_ATWAR");
 
     uint32 repListId;
     uint8  flag;
@@ -775,7 +776,7 @@ void WorldSession::HandleTutorialFlagOpcode(WorldPacket& recv_data)
     uint32 wInt = (iFlag / 32);
     if (wInt >= 8)
     {
-        //sLog.outError("CHEATER? Account:[%d] Guid[%u] tried to send wrong CMSG_TUTORIAL_FLAG", GetAccountId(),GetGUID());
+        //sLog.Out(LOG_BASIC, LOG_LVL_MINIMAL, "ERROR: CHEATER? Account:[%d] Guid[%u] tried to send wrong CMSG_TUTORIAL_FLAG", GetAccountId(),GetGUID());
         return;
     }
     uint32 rInt = (iFlag % 32);
@@ -784,7 +785,7 @@ void WorldSession::HandleTutorialFlagOpcode(WorldPacket& recv_data)
     tutflag |= (1 << rInt);
     SetTutorialInt(wInt, tutflag);
 
-    //sLog.outDebug("Received Tutorial Flag Set {%u}.", iFlag);
+    //sLog.Out(LOG_BASIC, LOG_LVL_DEBUG, "Received Tutorial Flag Set {%u}.", iFlag);
 }
 
 void WorldSession::HandleTutorialClearOpcode(WorldPacket& /*recv_data*/)
@@ -802,7 +803,7 @@ void WorldSession::HandleTutorialResetOpcode(WorldPacket& /*recv_data*/)
 void WorldSession::HandleSetWatchedFactionOpcode(WorldPacket& recv_data)
 {
 #if SUPPORTED_CLIENT_BUILD > CLIENT_BUILD_1_9_4
-    sLog.outDebug("WORLD: Received CMSG_SET_WATCHED_FACTION");
+    sLog.Out(LOG_BASIC, LOG_LVL_DEBUG, "WORLD: Received CMSG_SET_WATCHED_FACTION");
     int32 repId;
     recv_data >> repId;
     GetPlayer()->SetInt32Value(PLAYER_FIELD_WATCHED_FACTION_INDEX, repId);
@@ -811,7 +812,7 @@ void WorldSession::HandleSetWatchedFactionOpcode(WorldPacket& recv_data)
 
 void WorldSession::HandleSetFactionInactiveOpcode(WorldPacket& recv_data)
 {
-    sLog.outDebug("WORLD: Received CMSG_SET_FACTION_INACTIVE");
+    sLog.Out(LOG_BASIC, LOG_LVL_DEBUG, "WORLD: Received CMSG_SET_FACTION_INACTIVE");
     uint32 replistid;
     uint8 inactive;
     recv_data >> replistid >> inactive;
@@ -821,13 +822,13 @@ void WorldSession::HandleSetFactionInactiveOpcode(WorldPacket& recv_data)
 
 void WorldSession::HandleShowingHelmOpcode(WorldPacket& /*recv_data*/)
 {
-    sLog.outDebug("CMSG_SHOWING_HELM for %s", _player->GetName());
+    sLog.Out(LOG_BASIC, LOG_LVL_DEBUG, "CMSG_SHOWING_HELM for %s", _player->GetName());
     _player->ToggleFlag(PLAYER_FLAGS, PLAYER_FLAGS_HIDE_HELM);
 }
 
 void WorldSession::HandleShowingCloakOpcode(WorldPacket& /*recv_data*/)
 {
-    sLog.outDebug("CMSG_SHOWING_CLOAK for %s", _player->GetName());
+    sLog.Out(LOG_BASIC, LOG_LVL_DEBUG, "CMSG_SHOWING_CLOAK for %s", _player->GetName());
     _player->ToggleFlag(PLAYER_FLAGS, PLAYER_FLAGS_HIDE_CLOAK);
 }
 
@@ -905,7 +906,9 @@ void WorldSession::HandleChangePlayerNameOpcodeCallBack(QueryResult* result, uin
     CharacterDatabase.PExecute("UPDATE `characters` SET `name` = '%s', `at_login_flags` = `at_login_flags` & ~ %u WHERE `guid` ='%u'", newname.c_str(), uint32(AT_LOGIN_RENAME), guidLow);
     CharacterDatabase.CommitTransaction();
 
-    sLog.out(LOG_CHAR, "Account: %d (IP: %s) Character:[%s] (guid:%u) Changed name to: %s", session->GetAccountId(), session->GetRemoteAddress().c_str(), oldname.c_str(), guidLow, newname.c_str());
+    sLog.Player(session->GetAccountId(), LOG_CHAR, LOG_LVL_BASIC,
+        "Account: %d (IP: %s) Character:[%s] (guid:%u) Changed name to: %s",
+        session->GetAccountId(), session->GetRemoteAddress().c_str(), oldname.c_str(), guidLow, newname.c_str());
 
     WorldPacket data(SMSG_CHAR_RENAME, 1 + 8 + (newname.size() + 1));
     data << uint8(RESPONSE_SUCCESS);
