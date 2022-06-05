@@ -222,7 +222,7 @@ void WorldSession::QueuePacket(WorldPacket* newPacket)
     OpcodeHandler const& opHandle = opcodeTable[newPacket->GetOpcode()];
     if (opHandle.packetProcessing >= PACKET_PROCESS_MAX_TYPE)
     {
-        sLog.Out(LOG_BASIC, LOG_LVL_MINIMAL, "ERROR: SESSION: opcode %s (0x%.4X) will be skipped",
+        sLog.Out(LOG_BASIC, LOG_LVL_ERROR, "SESSION: opcode %s (0x%.4X) will be skipped",
                       LookupOpcodeName(newPacket->GetOpcode()),
                       newPacket->GetOpcode());
         return;
@@ -244,7 +244,7 @@ void WorldSession::LogUnexpectedOpcode(WorldPacket* packet, char const* reason)
 /// Logging helper for unexpected opcodes
 void WorldSession::LogUnprocessedTail(WorldPacket* packet)
 {
-    sLog.Out(LOG_BASIC, LOG_LVL_MINIMAL, "ERROR: SESSION: opcode %s (0x%.4X) have unprocessed tail data (read stop at " SIZEFMTD " from " SIZEFMTD ")",
+    sLog.Out(LOG_BASIC, LOG_LVL_ERROR, "SESSION: opcode %s (0x%.4X) have unprocessed tail data (read stop at " SIZEFMTD " from " SIZEFMTD ")",
                   LookupOpcodeName(packet->GetOpcode()),
                   packet->GetOpcode(),
                   packet->rpos(), packet->wpos());
@@ -402,7 +402,7 @@ void WorldSession::ProcessPackets(PacketFilter& updater)
                     ExecuteOpcode(opHandle, packet);
                     break;
                 case STATUS_NEVER:
-                    sLog.Out(LOG_BASIC, LOG_LVL_MINIMAL, "ERROR: SESSION: received not allowed opcode %s (0x%.4X)",
+                    sLog.Out(LOG_BASIC, LOG_LVL_ERROR, "SESSION: received not allowed opcode %s (0x%.4X)",
                                   opHandle.name,
                                   packet->GetOpcode());
                     break;
@@ -412,7 +412,7 @@ void WorldSession::ProcessPackets(PacketFilter& updater)
                               packet->GetOpcode());
                     break;
                 default:
-                    sLog.Out(LOG_BASIC, LOG_LVL_MINIMAL, "ERROR: SESSION: received wrong-status-req opcode %s (0x%.4X)",
+                    sLog.Out(LOG_BASIC, LOG_LVL_ERROR, "SESSION: received wrong-status-req opcode %s (0x%.4X)",
                                   opHandle.name,
                                   packet->GetOpcode());
                     break;
@@ -423,7 +423,7 @@ void WorldSession::ProcessPackets(PacketFilter& updater)
         }
         catch (ByteBufferException &)
         {
-            sLog.Out(LOG_BASIC, LOG_LVL_MINIMAL, "ERROR: WorldSession::Update ByteBufferException occured while parsing a packet (opcode:0x%x) from client %s, accountid=%i.",
+            sLog.Out(LOG_BASIC, LOG_LVL_ERROR, "WorldSession::Update ByteBufferException occured while parsing a packet (opcode:0x%x) from client %s, accountid=%i.",
                           packet->GetOpcode(), GetRemoteAddress().c_str(), GetAccountId());
             if (sLog.HasLogLevelOrHigher(LOG_LVL_DEBUG))
             {
@@ -730,28 +730,28 @@ char const*  WorldSession::GetMangosString(int32 entry) const
 
 void WorldSession::Handle_NULL(WorldPacket& recvPacket)
 {
-    sLog.Out(LOG_BASIC, LOG_LVL_MINIMAL, "ERROR: SESSION: received unimplemented opcode %s (0x%.4X)",
+    sLog.Out(LOG_BASIC, LOG_LVL_ERROR, "SESSION: received unimplemented opcode %s (0x%.4X)",
                   LookupOpcodeName(recvPacket.GetOpcode()),
                   recvPacket.GetOpcode());
 }
 
 void WorldSession::Handle_EarlyProccess(WorldPacket& recvPacket)
 {
-    sLog.Out(LOG_BASIC, LOG_LVL_MINIMAL, "ERROR: SESSION: received opcode %s (0x%.4X) that must be processed in WorldSocket::OnRead",
+    sLog.Out(LOG_BASIC, LOG_LVL_ERROR, "SESSION: received opcode %s (0x%.4X) that must be processed in WorldSocket::OnRead",
                   LookupOpcodeName(recvPacket.GetOpcode()),
                   recvPacket.GetOpcode());
 }
 
 void WorldSession::Handle_ServerSide(WorldPacket& recvPacket)
 {
-    sLog.Out(LOG_BASIC, LOG_LVL_MINIMAL, "ERROR: SESSION: received server-side opcode %s (0x%.4X)",
+    sLog.Out(LOG_BASIC, LOG_LVL_ERROR, "SESSION: received server-side opcode %s (0x%.4X)",
                   LookupOpcodeName(recvPacket.GetOpcode()),
                   recvPacket.GetOpcode());
 }
 
 void WorldSession::Handle_Deprecated(WorldPacket& recvPacket)
 {
-    sLog.Out(LOG_BASIC, LOG_LVL_MINIMAL, "ERROR: SESSION: received deprecated opcode %s (0x%.4X)",
+    sLog.Out(LOG_BASIC, LOG_LVL_ERROR, "SESSION: received deprecated opcode %s (0x%.4X)",
                   LookupOpcodeName(recvPacket.GetOpcode()),
                   recvPacket.GetOpcode());
 }

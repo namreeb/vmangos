@@ -471,7 +471,7 @@ SpellAuraProcResult Unit::TriggerProccedSpell(Unit* target, int32* basepoints, u
 
     if (!triggerEntry)
     {
-        sLog.Out(LOG_BASIC, LOG_LVL_MINIMAL, "ERROR: Unit::TriggerProccedSpell: Script has nonexistent triggered spell %u", triggeredSpellId);
+        sLog.Out(LOG_BASIC, LOG_LVL_ERROR, "Unit::TriggerProccedSpell: Script has nonexistent triggered spell %u", triggeredSpellId);
         return SPELL_AURA_PROC_FAILED;
     }
 
@@ -830,7 +830,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit* pVictim, uint32 damage, Aura
                             basepoints[0] = int32(0.20f * totalDamage);
                             break;
                         default:
-                            sLog.Out(LOG_BASIC, LOG_LVL_MINIMAL, "ERROR: Unit::HandleDummyAuraProc: non handled spell id: %u (IG)", dummySpell->Id);
+                            sLog.Out(LOG_BASIC, LOG_LVL_ERROR, "Unit::HandleDummyAuraProc: non handled spell id: %u (IG)", dummySpell->Id);
                             return SPELL_AURA_PROC_FAILED;
                     }
                     
@@ -1056,7 +1056,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit* pVictim, uint32 damage, Aura
                         spellId = 25713;
                         break;     // Rank 8
                     default:
-                        sLog.Out(LOG_BASIC, LOG_LVL_MINIMAL, "ERROR: Unit::HandleDummyAuraProc: non handled possibly SoR (Id = %u)", triggeredByAura->GetId());
+                        sLog.Out(LOG_BASIC, LOG_LVL_ERROR, "Unit::HandleDummyAuraProc: non handled possibly SoR (Id = %u)", triggeredByAura->GetId());
                         return SPELL_AURA_PROC_FAILED;
                 }
                 float MAX_WSP = 4.0f;
@@ -1344,7 +1344,7 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit* pVictim, uint32 d
                         trigger_spell_id = 28382;
                         break;   // Rank 6
                     default:
-                        sLog.Out(LOG_BASIC, LOG_LVL_MINIMAL, "ERROR: Unit::HandleProcTriggerSpell: Spell %u not handled in SG", auraSpellInfo->Id);
+                        sLog.Out(LOG_BASIC, LOG_LVL_ERROR, "Unit::HandleProcTriggerSpell: Spell %u not handled in SG", auraSpellInfo->Id);
                         return SPELL_AURA_PROC_FAILED;
                 }
             }
@@ -1363,7 +1363,7 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit* pVictim, uint32 d
                         trigger_spell_id = 27818;
                         break;
                     default:
-                        sLog.Out(LOG_BASIC, LOG_LVL_MINIMAL, "ERROR: Unit::HandleProcTriggerSpell: Spell %u not handled in BR", auraSpellInfo->Id);
+                        sLog.Out(LOG_BASIC, LOG_LVL_ERROR, "Unit::HandleProcTriggerSpell: Spell %u not handled in BR", auraSpellInfo->Id);
                         return SPELL_AURA_PROC_FAILED;
                 }
                 basepoints[0] = dither(damage * triggerAmount / 100 / 3);
@@ -1485,7 +1485,7 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit* pVictim, uint32 d
                         trigger_spell_id = 20353;
                         break; // Rank 3
                     default:
-                        sLog.Out(LOG_BASIC, LOG_LVL_MINIMAL, "ERROR: Unit::HandleProcTriggerSpell: Spell %u miss posibly Judgement of Light/Wisdom", auraSpellInfo->Id);
+                        sLog.Out(LOG_BASIC, LOG_LVL_ERROR, "Unit::HandleProcTriggerSpell: Spell %u miss posibly Judgement of Light/Wisdom", auraSpellInfo->Id);
                         return SPELL_AURA_PROC_FAILED;
                 }
                 pVictim->CastSpell(pVictim, trigger_spell_id, true, castItem, triggeredByAura);
@@ -1507,7 +1507,7 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit* pVictim, uint32 d
                 SpellEntry const* originalSpell = sSpellMgr.GetSpellEntry(pPlayer->m_castingSpell);
                 if (!originalSpell)
                 {
-                    sLog.Out(LOG_BASIC, LOG_LVL_MINIMAL, "ERROR: Unit::HandleProcTriggerSpell: Spell %u unknown but selected as original in Illu", pPlayer->m_castingSpell);
+                    sLog.Out(LOG_BASIC, LOG_LVL_ERROR, "Unit::HandleProcTriggerSpell: Spell %u unknown but selected as original in Illu", pPlayer->m_castingSpell);
                     return SPELL_AURA_PROC_FAILED;
                 }
                 // Histoire de pas reproc une autre fois ... :S
@@ -1548,7 +1548,7 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit* pVictim, uint32 d
                         trigger_spell_id = 26363;
                         break;
                     default:
-                        sLog.Out(LOG_BASIC, LOG_LVL_MINIMAL, "ERROR: Unit::HandleProcTriggerSpell: Spell %u not handled in LShield", auraSpellInfo->Id);
+                        sLog.Out(LOG_BASIC, LOG_LVL_ERROR, "Unit::HandleProcTriggerSpell: Spell %u not handled in LShield", auraSpellInfo->Id);
                         return SPELL_AURA_PROC_FAILED;
                 }
             }
@@ -1581,7 +1581,7 @@ SpellAuraProcResult Unit::HandleProcTriggerSpellAuraProc(Unit* pVictim, uint32 d
     if (!triggerEntry)
     {
         // Not cast unknown spell
-        sLog.Out(LOG_BASIC, LOG_LVL_MINIMAL, "ERROR: Unit::HandleProcTriggerSpell: Spell %u have %u in EffectTriggered[%d], not handled custom case?", auraSpellInfo->Id, trigger_spell_id, triggeredByAura->GetEffIndex());
+        sLog.Out(LOG_BASIC, LOG_LVL_ERROR, "Unit::HandleProcTriggerSpell: Spell %u have %u in EffectTriggered[%d], not handled custom case?", auraSpellInfo->Id, trigger_spell_id, triggeredByAura->GetEffIndex());
         return SPELL_AURA_PROC_FAILED;
     }
 
@@ -1821,7 +1821,7 @@ SpellAuraProcResult Unit::HandleAddTargetTriggerAuraProc(Unit* pVictim, uint32 /
             }
             default:
             {
-                sLog.Out(LOG_BASIC, LOG_LVL_MINIMAL, "ERROR: Spell %u has chance = -1 but not handled in core ...", aurEntry->Id);
+                sLog.Out(LOG_BASIC, LOG_LVL_ERROR, "Spell %u has chance = -1 but not handled in core ...", aurEntry->Id);
                 break;
             }
         }
