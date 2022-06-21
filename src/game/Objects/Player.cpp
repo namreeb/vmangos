@@ -22211,14 +22211,12 @@ void PlayerLogFormatted(uint32 accountId, WorldSession const* session, LogType l
         "RA",
         "DBError",
         "DBErrorFix",
-        "ClientIds",
         "Loot",
         "LevelUp",
         "Performance",
         "MoneyTrade",
         "GM",
         "GMCritical",
-        "ChatSpam",
         "Anticheat"
     };
 
